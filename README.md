@@ -16,3 +16,9 @@ ORIGINAL DATA is read from .csv
 2.ConrecMesher  
 Use CONREC algorithm Written by Paul Bourke 
 http://paulbourke.net/papers/conrec/  
+
+
+by the way:
+This is the bachelor thesis of me!
+I almost fail in it and that means I may not graduate from the BULL SHIT college!!!
+But now ! I made it! I m sooooooo happy!!!
