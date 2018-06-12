@@ -29,8 +29,7 @@ import java.util.function.BiConsumer;
  *  3.优化抖动系数
  *  4（重点）.引入残差分析 改变抖动系数进行多次模拟，最终将得到一个相对稳定的结果，即真实结果
  */
-public class DataSpreader
-{
+public class DataSpreader {
 	private int width;
 	private int height;
 	private double[][] data;
@@ -40,8 +39,7 @@ public class DataSpreader
 	private Weight[][] weight;
 	private HashMap<Point, Double> valueMap;
 
-	public DataSpreader(String csvFilePath, int width, int height)
-	{
+	public DataSpreader(String csvFilePath, int width, int height) {
 		this.width = width;
 		this.height = height;
 		data = new double[width][height];
@@ -52,15 +50,12 @@ public class DataSpreader
 		this.initData();
 	}
 
-	private void initValueMapFromCSV(String csvFilePath, int height)
-	{
-		try
-		{
+	private void initValueMapFromCSV(String csvFilePath, int height) {
+		try {
 			BufferedReader reader = new BufferedReader(
 					new InputStreamReader(new FileInputStream(csvFilePath), "utf-8"));
 			String content = "";
-			while ((content = reader.readLine()) != null)
-			{
+			while ((content = reader.readLine()) != null) {
 				String[] vars = content.split(",");
 				int x = (int) (Math.cos((Double.valueOf(vars[0])) / 180 * Math.PI) * Double.valueOf(vars[1])) * 10;
 				int y = height
@@ -70,41 +65,32 @@ public class DataSpreader
 				this.valueMap.put(position, value);
 			}
 			reader.close();
-		} catch (UnsupportedEncodingException | FileNotFoundException e)
-		{
+		} catch (UnsupportedEncodingException | FileNotFoundException e) {
 			e.printStackTrace();
-		} catch (IOException e)
-		{
+		} catch (IOException e) {
 			e.printStackTrace();
 		}
 	}
 
-	private void initWeight()
-	{
+	private void initWeight() {
 		Point[] points = new Point[this.valueMap.size()];
 		Iterator<Point> iter = this.valueMap.keySet().iterator();
 		int index = 0;
-		while (iter.hasNext())
-		{
+		while (iter.hasNext()) {
 			points[index] = (Point) iter.next();
 			index++;
 		}
-		for (int i = 0; i < width; i++)
-		{
-			for (int u = 0; u < height; u++)
-			{
+		for (int i = 0; i < width; i++) {
+			for (int u = 0; u < height; u++) {
 				weight[i][u] = new Weight(i, u, points);
 			}
 		}
 	}
 
-	private void initData()
-	{
-		this.valueMap.forEach(new BiConsumer<Point, Double>()
-		{
+	private void initData() {
+		this.valueMap.forEach(new BiConsumer<Point, Double>() {
 			@Override
-			public void accept(Point position, Double value)
-			{
+			public void accept(Point position, Double value) {
 				int x = (int) position.getX();
 				int y = (int) position.getY();
 				data[x][y] = value;
@@ -113,38 +99,32 @@ public class DataSpreader
 		});
 	}
 
-	private void spread(Point position, Double value)
-	{
+	private void spread(Point position, Double value) {
 		int spreadRadium = (int) Math.sqrt(width * width + height * height);
 		Random shake = new Random();
-		for (int i = 1; i < spreadRadium; i++)
-		{
+		for (int i = 1; i < spreadRadium; i++) {
 			shake.setSeed(System.currentTimeMillis());
-			int change = shake.nextInt(5) - 5;
+			int change = shake.nextInt() % 11 - 5;
 			int startX = (int) position.getX() - i;
 			int startY = (int) position.getY() - i;
 			// 四条边
-			for (int u = 0; u < 2 * i + 1; u++)
-			{
+			for (int u = 0; u < 2 * i + 1; u++) {
 				int spreadToX = startX;
 				int spreadToY = startY + u;
 				this.setSpreadData(position, new Point(spreadToX, spreadToY), value + change);
 			}
-			for (int u = 0; u < 2 * i + 1; u++)
-			{
+			for (int u = 0; u < 2 * i + 1; u++) {
 				int spreadToX = startX + 2 * i;
 				int spreadToY = startY + u;
 				this.setSpreadData(position, new Point(spreadToX, spreadToY), value + change);
 			}
 			// 去顶点
-			for (int u = 1; u < 2 * i; u++)
-			{
+			for (int u = 1; u < 2 * i; u++) {
 				int spreadToX = startX + u;
 				int spreadToY = startY;
 				this.setSpreadData(position, new Point(spreadToX, spreadToY), value + change);
 			}
-			for (int u = 1; u < 2 * i; u++)
-			{
+			for (int u = 1; u < 2 * i; u++) {
 				int spreadToX = startX + u;
 				int spreadToY = startY + 2 * i;
 				this.setSpreadData(position, new Point(spreadToX, spreadToY), value + change);
@@ -152,11 +132,9 @@ public class DataSpreader
 		}
 	}
 
-	private void setSpreadData(Point origin, Point spreadTo, double spreadValue)
-	{
+	private void setSpreadData(Point origin, Point spreadTo, double spreadValue) {
 		if (spreadTo.getX() >= this.width || spreadTo.getY() >= this.height || spreadTo.getX() < 0
-				|| spreadTo.getY() < 0)
-		{
+				|| spreadTo.getY() < 0) {
 			return;
 		}
 		double spreadWeight = this.getSpreadWeight(origin.distance(spreadTo));
@@ -165,29 +143,23 @@ public class DataSpreader
 	}
 
 	// 模型可优化
-	private double getSpreadWeight(double spreadRadium)
-	{
+	private double getSpreadWeight(double spreadRadium) {
 		return Math.pow(0.999, spreadRadium);
 	}
 
-	public double[][] getData()
-	{
+	public double[][] getData() {
 		return data;
 	}
 
-	public void generateDataFile(String filePath) throws IOException
-	{
+	public void generateDataFile(String filePath) throws IOException {
 		BufferedOutputStream os = new BufferedOutputStream(new FileOutputStream(new File(filePath)));
-		for (int i = 0; i < data.length; i++)
-		{
-			for (int u = 0; u < data[i].length; u++)
-			{
+		for (int i = 0; i < data.length; i++) {
+			for (int u = 0; u < data[i].length; u++) {
 				String txt = String.valueOf(data[i][u]) + "\n";
 				os.write(txt.getBytes());
 				os.flush();
 			}
 		}
 		os.close();
-
 	}
 }

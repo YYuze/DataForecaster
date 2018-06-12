@@ -8,83 +8,63 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Iterator;
 
-public class ConrecMesher
-{
+public class ConrecMesher {
 	private double[][] data;
 	private double[] level;
 
-	public ConrecMesher(double[][] data)
-	{
+	public ConrecMesher(double[][] data) {
 		this.initData(data);
 		this.initLevel();
 	}
 
-	private void initData(double[][] data)
-	{
+	private void initData(double[][] data) {
 		this.data = data;
-		for (int i = 0; i < this.data.length; i++)
-		{
-			for (int u = 0; u < this.data[i].length; u++)
-			{
-				if (this.data[i][u] > 100)
-				{
+		for (int i = 0; i < this.data.length; i++) {
+			for (int u = 0; u < this.data[i].length; u++) {
+				if (this.data[i][u] > 100) {
 					this.data[i][u] = 100;
 				}
-				if (this.data[i][u] < 0)
-				{
+				if (this.data[i][u] < 0) {
 					this.data[i][u] = 0;
 				}
 			}
 		}
 	}
 
-	private void initLevel()
-	{
+	private void initLevel() {
 		this.level = new double[100];
-		for (int i = 0; i < 100; i++)
-		{
+		for (int i = 0; i < 100; i++) {
 			this.level[i] = i;
 		}
 	}
 
-	private short getCase(short[] state)
-	{
-		if ((state[0] == state[1]) && (state[0] == 0) && (state[2] != 0))
-		{
+	private short getCase(short[] state) {
+		if ((state[0] == state[1]) && (state[0] == 0) && (state[2] != 0)) {
 			return 1;
 		}
-		if ((state[0] == state[2]) && (state[0] == 0) && (state[1] != 0))
-		{
+		if ((state[0] == state[2]) && (state[0] == 0) && (state[1] != 0)) {
 			return 2;
 		}
-		if ((state[1] == state[2]) && (state[1] == 0) && (state[0] != 0))
-		{
+		if ((state[1] == state[2]) && (state[1] == 0) && (state[0] != 0)) {
 			return 3;
 		}
-		if ((state[0] == 0) && (state[1] != state[2]) && (state[1] != 0) && (state[2] != 0))
-		{
+		if ((state[0] == 0) && (state[1] != state[2]) && (state[1] != 0) && (state[2] != 0)) {
 			return 4;
 		}
-		if ((state[2] == 0) && (state[0] != state[1]) && (state[0] != 0) && (state[1] != 0))
-		{
+		if ((state[2] == 0) && (state[0] != state[1]) && (state[0] != 0) && (state[1] != 0)) {
 			return 5;
 		}
-		if ((state[1] == 0) && (state[0] != state[2]) && (state[0] != 0) && (state[2] != 0))
-		{
+		if ((state[1] == 0) && (state[0] != state[2]) && (state[0] != 0) && (state[2] != 0)) {
 			return 6;
 		}
-		if ((state[0] != 0) && (state[1] != 0) && (state[2] != 0))
-		{
-			if ((state[1] == state[2]) && (state[0] != state[1]))
-			{
+		if ((state[0] != 0) && (state[1] != 0) && (state[2] != 0)) {
+			if ((state[1] == state[2]) && (state[0] != state[1])) {
 				return 7;
 			}
-			if ((state[0] == state[2]) && (state[0] != state[1]))
-			{
+			if ((state[0] == state[2]) && (state[0] != state[1])) {
 				return 8;
 			}
-			if ((state[0] == state[1]) && (state[0] != state[2]))
-			{
+			if ((state[0] == state[1]) && (state[0] != state[2])) {
 				return 9;
 			}
 		}
@@ -92,17 +72,14 @@ public class ConrecMesher
 	}
 
 	/*
-	 * vertex第一个维度为点 第二个维度 0表示横坐标 1表示纵坐标
-	 * vertex[0]vertex[1]为网格顶点 vertex[2]点为网格中心
+	 * vertex第一个维度为点 第二个维度 0表示横坐标 1表示纵坐标 vertex[0]vertex[1]为网格顶点 vertex[2]点为网格中心
 	 */
-	private Line getLine(short cas, double[] h,double[][] vertex,double horizen)
-	{
+	private Line getLine(short cas, double[] h, double[][] vertex, double horizen) {
 		double x1 = 0;
 		double y1 = 0;
 		double x2 = 0;
 		double y2 = 0;
-		switch(cas)
-		{
+		switch (cas) {
 		case 1:
 			x1 = vertex[0][0];
 			y1 = vertex[0][1];
@@ -158,121 +135,104 @@ public class ConrecMesher
 			y2 = this.sect(vertex[2][1], vertex[1][1], h[2], h[1], horizen);
 			break;
 		default:
-			return new Line(0,0,0,0,0);
+			return new Line(0, 0, 0, 0, 0);
 		}
-		return new Line(x1,y1,x2,y2,horizen);
-	}
-	
-	private double sect(double v1,double v2,double h1,double h2,double horizen)
-	{
-		double length = h1 - h2;
-		double k = 0;
-		if(length<0)
-		{
-			k = horizen/(-length);
-		}
-		else
-		{
-			k = 1.0-horizen/length;
-		}
-		
-		return (1-k)*(v2-v1)+v1;
+		return new Line(x1, y1, x2, y2, horizen);
 	}
 
-	private Line[] getLinesInGrid(int x, int y, double horizen)
-	{
+	private double sect(double v1, double v2, double h1, double h2, double horizen) {
+		double length = h1 - h2;
+		double k = 0;
+		if (length < 0) {
+			k = horizen / (-length);
+		} else {
+			k = 1.0 - horizen / length;
+		}
+
+		return (1 - k) * (v2 - v1) + v1;
+	}
+
+	private Line[] getLinesInGrid(int x, int y, double horizen) {
 		double[] h = new double[5];
-		double[][] vertex = {{x+0.5,y+0.5},{x,y},{x+1,y},{x+1,y+1},{x,y+1}};
+		double[][] vertex = { { x + 0.5, y + 0.5 }, { x, y }, { x + 1, y }, { x + 1, y + 1 }, { x, y + 1 } };
 		h[1] = this.data[x][y] - horizen;
 		h[2] = this.data[x + 1][y] - horizen;
 		h[3] = this.data[x + 1][y + 1] - horizen;
 		h[4] = this.data[x][y + 1] - horizen;
 		h[0] = (h[1] + h[2] + h[3] + h[4]) / 4;
 		short[] state = new short[5];
-		for (int i = 0; i < 5; i++)
-		{
-			if (h[i] > 0)
-			{
+		for (int i = 0; i < 5; i++) {
+			if (h[i] > 0) {
 				state[i] = 1;
-			} else if (h[i] < 0)
-			{
+			} else if (h[i] < 0) {
 				state[i] = -1;
-			} else
-			{
+			} else {
 				state[i] = 0;
 			}
 		}
-		
+
 		// 第一个三角由h[4],h[1],h[0]
 		short[] state1 = { state[4], state[1], state[0] };
 		double[] h1 = { h[4], h[1], h[0] };
 		short cas1 = this.getCase(state1);
-		double[][] v1 = {vertex[4],vertex[1],vertex[0]};
-		Line line1 = this.getLine(cas1, h1,v1,horizen);
-		
+		double[][] v1 = { vertex[4], vertex[1], vertex[0] };
+		Line line1 = this.getLine(cas1, h1, v1, horizen);
+
 		// 第二个三角由h[1],[2],h[0]
 		short[] state2 = { state[1], state[2], state[0] };
 		double[] h2 = { h[1], h[2], h[0] };
 		short cas2 = this.getCase(state2);
-		double[][] v2 = {vertex[1],vertex[2],vertex[0]};
-		Line line2 = this.getLine(cas2, h2,v2,horizen);
-		
+		double[][] v2 = { vertex[1], vertex[2], vertex[0] };
+		Line line2 = this.getLine(cas2, h2, v2, horizen);
+
 		// 第三个三角由h[2],h[3],h[0]
 		short[] state3 = { state[2], state[3], state[0] };
 		double[] h3 = { h[2], h[3], h[0] };
 		short cas3 = this.getCase(state3);
-		double[][] v3 = {vertex[2],vertex[3],vertex[0]};
-		Line line3 = this.getLine(cas3, h3,v3,horizen);
-		
+		double[][] v3 = { vertex[2], vertex[3], vertex[0] };
+		Line line3 = this.getLine(cas3, h3, v3, horizen);
+
 		// 第四个三角由h[3],h[4],h[0]
 		short[] state4 = { state[3], state[4], state[0] };
 		double[] h4 = { h[3], h[4], h[0] };
 		short cas4 = this.getCase(state4);
-		double[][] v4 = {vertex[3],vertex[4],vertex[0]};
-		Line line4 = this.getLine(cas4, h4,v4,horizen);
-		
+		double[][] v4 = { vertex[3], vertex[4], vertex[0] };
+		Line line4 = this.getLine(cas4, h4, v4, horizen);
+
 		Line[] lines = { line1, line2, line3, line4 };
 		return lines;
 	}
-	
-	private ArrayList<Line> getLinesOnHorizen(double horizen)
-	{
+
+	private ArrayList<Line> getLinesOnHorizen(double horizen) {
 		ArrayList<Line> collector = new ArrayList<Line>();
-		//System.out.println((data[1].length-1)+" "+(data.length-1));
-		for(int i = 1; i<data.length-1;i++)
-		{
-			for(int u=1;u<data[i].length-1;u++)
-			{
-				
+		for (int i = 1; i < data.length - 1; i++) {
+			for (int u = 1; u < data[i].length - 1; u++) {
+
 				Line[] gridLines = this.getLinesInGrid(i, u, horizen);
-				for(int index = 0;index<gridLines.length;index++)
-				{
+				for (int index = 0; index < gridLines.length; index++) {
 					collector.add(gridLines[index]);
 				}
 			}
 		}
-		return collector;	
+		return collector;
 	}
 
-	public  void generateMeshingFile(String filePath) throws IOException
-	{
+	public void generateMeshingFile(String filePath) throws IOException {
 		BufferedOutputStream os = new BufferedOutputStream(new FileOutputStream(new File(filePath)));
-		for(int i = 0;i<this.level.length;i++)
-		{
+		for (int i = 0; i < this.level.length; i++) {
 			ArrayList<Line> linesOnLevel = this.getLinesOnHorizen(this.level[i]);
 			Iterator<Line> iter = linesOnLevel.iterator();
-			while(iter.hasNext())
-			{
+			while (iter.hasNext()) {
 				Line line = iter.next();
 				String x1 = String.valueOf(line.getLine().getX1());
 				String y1 = String.valueOf(line.getLine().getY1());
 				String x2 = String.valueOf(line.getLine().getX2());
 				String y2 = String.valueOf(line.getLine().getY2());
 				String rgb = String.valueOf(line.getLineRGB());
-				String txt = x1+","+y1+","+x2+","+y2+","+rgb+"\n";
+				String txt = x1 + "," + y1 + "," + x2 + "," + y2 + "," + rgb + "\n";
 				os.write(txt.getBytes());
 			}
-			System.out.println("processing: "+i+"/"+this.level.length);
+			System.out.println("processing: " + i + "/" + this.level.length);
 		}
 		os.close();
 	}
