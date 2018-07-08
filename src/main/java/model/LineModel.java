@@ -1,21 +1,21 @@
-package vo;
+package model;
 
 import java.awt.geom.Line2D;
 
 /*
  * line in grid initiate with start point\end point\value
  */
-public class Line {
+public class LineModel {
 
     private Line2D.Double line;
     private int rgb;
 
-    public Line(double x1, double y1, double x2, double y2, double value) {
+    public LineModel(double x1, double y1, double x2, double y2, double value) {
         line = new Line2D.Double(x1, y1, x2, y2);
         this.rgb = this.convertValueToRGB(value);
     }
 
-    public Line(double x1, double y1, double x2, double y2, int rgb) {
+    public LineModel(double x1, double y1, double x2, double y2, int rgb) {
         line = new Line2D.Double(x1, y1, x2, y2);
         this.rgb = rgb;
     }

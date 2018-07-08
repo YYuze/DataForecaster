@@ -1,6 +1,6 @@
 package part;
 
-import vo.Line;
+import model.LineModel;
 
 import java.io.BufferedOutputStream;
 import java.io.File;
@@ -76,7 +76,7 @@ public class ConrecMesher {
     /*
      * vertex第一个维度为点 第二个维度 0表示横坐标 1表示纵坐标 vertex[0]vertex[1]为网格顶点 vertex[2]点为网格中心
      */
-    private Line getLine(short cas, double[] h, double[][] vertex, double horizen) {
+    private LineModel getLine(short cas, double[] h, double[][] vertex, double horizen) {
         double x1 = 0;
         double y1 = 0;
         double x2 = 0;
@@ -137,9 +137,9 @@ public class ConrecMesher {
                 y2 = this.sect(vertex[2][1], vertex[1][1], h[2], h[1], horizen);
                 break;
             default:
-                return new Line(0, 0, 0, 0, 0);
+                return new LineModel(0, 0, 0, 0, 0);
         }
-        return new Line(x1, y1, x2, y2, horizen);
+        return new LineModel(x1, y1, x2, y2, horizen);
     }
 
     private double sect(double v1, double v2, double h1, double h2, double horizen) {
@@ -155,7 +155,7 @@ public class ConrecMesher {
         return (1 - k) * (v2 - v1) + v1;
     }
 
-    private Line[] getLinesInGrid(int x, int y, double horizen) {
+    private LineModel[] getLinesInGrid(int x, int y, double horizen) {
         double[] h = new double[5];
         double[][] vertex = {{x + 0.5, y + 0.5}, {x, y}, {x + 1, y}, {x + 1, y + 1}, {x, y + 1}};
         h[1] = this.data[x][y] - horizen;
@@ -181,41 +181,41 @@ public class ConrecMesher {
         double[] h1 = {h[4], h[1], h[0]};
         short cas1 = this.getCase(state1);
         double[][] v1 = {vertex[4], vertex[1], vertex[0]};
-        Line line1 = this.getLine(cas1, h1, v1, horizen);
+        LineModel lineModel1 = this.getLine(cas1, h1, v1, horizen);
 
         // 第二个三角由h[1],[2],h[0]
         short[] state2 = {state[1], state[2], state[0]};
         double[] h2 = {h[1], h[2], h[0]};
         short cas2 = this.getCase(state2);
         double[][] v2 = {vertex[1], vertex[2], vertex[0]};
-        Line line2 = this.getLine(cas2, h2, v2, horizen);
+        LineModel lineModel2 = this.getLine(cas2, h2, v2, horizen);
 
         // 第三个三角由h[2],h[3],h[0]
         short[] state3 = {state[2], state[3], state[0]};
         double[] h3 = {h[2], h[3], h[0]};
         short cas3 = this.getCase(state3);
         double[][] v3 = {vertex[2], vertex[3], vertex[0]};
-        Line line3 = this.getLine(cas3, h3, v3, horizen);
+        LineModel lineModel3 = this.getLine(cas3, h3, v3, horizen);
 
         // 第四个三角由h[3],h[4],h[0]
         short[] state4 = {state[3], state[4], state[0]};
         double[] h4 = {h[3], h[4], h[0]};
         short cas4 = this.getCase(state4);
         double[][] v4 = {vertex[3], vertex[4], vertex[0]};
-        Line line4 = this.getLine(cas4, h4, v4, horizen);
+        LineModel lineModel4 = this.getLine(cas4, h4, v4, horizen);
 
-        Line[] lines = {line1, line2, line3, line4};
-        return lines;
+        LineModel[] lineModels = {lineModel1, lineModel2, lineModel3, lineModel4};
+        return lineModels;
     }
 
-    private ArrayList<Line> getLinesOnHorizen(double horizen) {
-        ArrayList<Line> collector = new ArrayList<Line>();
+    private ArrayList<LineModel> getLinesOnHorizen(double horizen) {
+        ArrayList<LineModel> collector = new ArrayList<LineModel>();
         for (int i = 1; i < data.length - 1; i++) {
             for (int u = 1; u < data[i].length - 1; u++) {
 
-                Line[] gridLines = this.getLinesInGrid(i, u, horizen);
-                for (int index = 0; index < gridLines.length; index++) {
-                    collector.add(gridLines[index]);
+                LineModel[] gridLineModels = this.getLinesInGrid(i, u, horizen);
+                for (int index = 0; index < gridLineModels.length; index++) {
+                    collector.add(gridLineModels[index]);
                 }
             }
         }
@@ -225,15 +225,15 @@ public class ConrecMesher {
     public void generateMeshingFile(String filePath) throws IOException {
         BufferedOutputStream os = new BufferedOutputStream(new FileOutputStream(new File(filePath)));
         for (int i = 0; i < this.level.length; i++) {
-            ArrayList<Line> linesOnLevel = this.getLinesOnHorizen(this.level[i]);
-            Iterator<Line> iter = linesOnLevel.iterator();
+            ArrayList<LineModel> linesOnLevel = this.getLinesOnHorizen(this.level[i]);
+            Iterator<LineModel> iter = linesOnLevel.iterator();
             while (iter.hasNext()) {
-                Line line = iter.next();
-                String x1 = String.valueOf(line.getLine().getX1());
-                String y1 = String.valueOf(line.getLine().getY1());
-                String x2 = String.valueOf(line.getLine().getX2());
-                String y2 = String.valueOf(line.getLine().getY2());
-                String rgb = String.valueOf(line.getLineRGB());
+                LineModel lineModel = iter.next();
+                String x1 = String.valueOf(lineModel.getLine().getX1());
+                String y1 = String.valueOf(lineModel.getLine().getY1());
+                String x2 = String.valueOf(lineModel.getLine().getX2());
+                String y2 = String.valueOf(lineModel.getLine().getY2());
+                String rgb = String.valueOf(lineModel.getLineRGB());
                 String txt = x1 + "," + y1 + "," + x2 + "," + y2 + "," + rgb + "\n";
                 os.write(txt.getBytes());
             }

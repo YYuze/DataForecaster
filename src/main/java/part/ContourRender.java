@@ -1,6 +1,6 @@
 package part;
 
-import vo.Line;
+import model.LineModel;
 
 import java.awt.*;
 import java.awt.image.BufferedImage;
@@ -13,14 +13,14 @@ public class ContourRender {
         this.g = target.createGraphics();
     }
 
-    public void drawLine(Line[] target) {
-        for (Line i : target) {
+    public void drawLine(LineModel[] target) {
+        for (LineModel i : target) {
             g.setColor(new Color(i.getLineRGB()));
             g.draw(i.getLine());
         }
     }
 
-    public void drawLine(Line target) {
+    public void drawLine(LineModel target) {
         g.setColor(new Color(target.getLineRGB()));
         g.draw(target.getLine());
     }

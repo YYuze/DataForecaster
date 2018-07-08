@@ -1,6 +1,6 @@
 package part;
 
-import vo.WeightModel;
+import model.WeightModel;
 
 import java.awt.*;
 import java.io.*;

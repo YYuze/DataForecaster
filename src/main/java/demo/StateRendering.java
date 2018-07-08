@@ -1,7 +1,7 @@
 package demo;
 
 import part.ContourRender;
-import vo.Line;
+import model.LineModel;
 
 import java.awt.image.BufferedImage;
 import java.io.BufferedReader;
@@ -34,8 +34,8 @@ public class StateRendering {
 							double x2 = Double.valueOf(arg[2]);
 							double y2 = Double.valueOf(arg[3]);
 							int rgb = Integer.valueOf(arg[4]);
-							Line line = new Line(x1, y1, x2, y2, rgb);
-							brush.drawLine(line);
+							LineModel lineModel = new LineModel(x1, y1, x2, y2, rgb);
+							brush.drawLine(lineModel);
 						}
 						System.out.println("Rendering finished");
 						reader.close();
@@ -68,8 +68,8 @@ public class StateRendering {
 							double x2 = Double.valueOf(arg[2]);
 							double y2 = Double.valueOf(arg[3]);
 							int rgb = Integer.valueOf(arg[4]);
-							Line line = new Line(x1, y1, x2, y2, rgb);
-							brush.drawLine(line);
+							LineModel lineModel = new LineModel(x1, y1, x2, y2, rgb);
+							brush.drawLine(lineModel);
 						}
 						System.out.println("Rendering finished");
 						reader.close();
