@@ -1,4 +1,4 @@
-package Layer;
+package part;
 
 import java.awt.geom.Line2D;
 
