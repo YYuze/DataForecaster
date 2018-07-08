@@ -1,4 +1,4 @@
-# DataProcessorWithContour
+# DataForecaster
 Generator a contour with some data      
 There are four steps you need to do:      
 step1 Put some data you need process in a .csv file,default:polar coordinates(angle,length,value)     
@@ -22,3 +22,6 @@ by the way:
 This is the bachelor thesis of me!            
 I almost fail in it and that means I may not graduate from the BULL SHIT college!!!         
 But now ! I made it! I m sooooooo happy!!!        
+
+2018/07/08
+update model with global model: w(x)=I1(x)*e^I2(x)+I3(x)
