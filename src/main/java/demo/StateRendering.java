@@ -1,3 +1,8 @@
+package demo;
+
+import Layer.ContourRender;
+import Layer.Line;
+
 import java.awt.image.BufferedImage;
 import java.io.BufferedReader;
 import java.io.File;
