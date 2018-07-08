@@ -1,4 +1,4 @@
-package part;
+package vo;
 
 import java.awt.geom.Line2D;
 

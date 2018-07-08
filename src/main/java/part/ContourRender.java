@@ -1,4 +1,6 @@
-package Layer;
+package part;
+
+import vo.Line;
 
 import java.awt.*;
 import java.awt.image.BufferedImage;

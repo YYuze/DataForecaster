@@ -1,6 +1,6 @@
 package demo;
 import java.io.IOException;
-import Layer.DataSpreader;
+import part.DataSpreader;
 /*
  * 由于数据计算密度较高，采用多线程并发计算对cpu要求很高
  * cpu计算速度不够时就会出现GC线程锁死的情况

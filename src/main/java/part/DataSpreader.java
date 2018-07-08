@@ -1,4 +1,6 @@
-package Layer;
+package part;
+
+import vo.WeightModel;
 
 import java.awt.*;
 import java.io.*;
@@ -31,7 +33,7 @@ public class DataSpreader {
     /*
      * 每个点都有到所有赋值点的权重 这个权重是用距离作为变量
      */
-    private Weight[][] weight;
+    private WeightModel[][] weightModel;
     private HashMap<Point, Double> valueMap;
 
     public DataSpreader(String csvFilePath, int width, int height) {
@@ -40,7 +42,7 @@ public class DataSpreader {
         data = new double[width][height];
         valueMap = new HashMap<Point, Double>();
         this.initValueMapFromCSV(csvFilePath, height);
-        weight = new Weight[width][height];
+        weightModel = new WeightModel[width][height];
         this.initWeight();
         this.initData();
     }
@@ -75,7 +77,7 @@ public class DataSpreader {
         }
         for (int i = 0; i < width; i++) {
             for (int u = 0; u < height; u++) {
-                weight[i][u] = new Weight(i, u, points);
+                weightModel[i][u] = new WeightModel(i, u, points);
             }
         }
     }
@@ -130,14 +132,9 @@ public class DataSpreader {
                 || spreadTo.getY() < 0) {
             return;
         }
-        double spreadWeight = this.getSpreadWeight(origin.distance(spreadTo));
-        double pointWeight = weight[(int) spreadTo.getX()][(int) spreadTo.getY()].getWeightToPoint(origin);
+        double spreadWeight = this.weightModel[(int) spreadTo.getX()][(int) spreadTo.getY()].getWeightBySpreadRadium(origin.distance(spreadTo));
+        double pointWeight = this.weightModel[(int) spreadTo.getX()][(int) spreadTo.getY()].getWeightToPoint(origin);
         data[(int) spreadTo.getX()][(int) spreadTo.getY()] += spreadValue * pointWeight * spreadWeight;
-    }
-
-    // 模型可优化
-    private double getSpreadWeight(double spreadRadium) {
-        return Math.pow(0.999, spreadRadium);
     }
 
     public double[][] getData() {
