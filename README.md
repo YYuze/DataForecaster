@@ -26,5 +26,5 @@ But now ! I made it! I m sooooooo happy!!!
 2018/07/08  
 update model with global model: w(x)=I1(x)*e^I2(x)+I3(x)
 
-2018/07/10
+2018/07/10  
 add Datachecker for iterating checking
